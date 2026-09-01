@@ -22,7 +22,7 @@ const Feed = () => {
   ]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/posts')
+    axios.get('https://complete-backend-465s.onrender.com/posts')
       .then((res) => {
         const apiPosts = Array.isArray(res.data.posts) ? res.data.posts : [];
 

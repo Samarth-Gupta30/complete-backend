@@ -13,7 +13,7 @@ const CreatePost = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/create-post",
+        "https://complete-backend-465s.onrender.com/create-post",
         formData
       );
 
