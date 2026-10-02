@@ -1,47 +1,24 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+
 const Feed = () => {
-  const [posts, setPosts] = useState([
-    {
-      _id: "1",
-      image: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=800&q=80",
-      caption: "Post 1"
-    },
-    {
-      _id: "2",
-      image: "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=800&q=80",
-      caption: "Post 2"
-    },
-    {
-      _id: "3",
-      image: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=800&q=80",
-      caption: "Post 3"
-    }
-  ]);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('https://complete-backend-465s.onrender.com/posts')
+    axios.get(`${API_BASE_URL}/posts`)
       .then((res) => {
         const apiPosts = Array.isArray(res.data.posts) ? res.data.posts : [];
-
-        setPosts((prevPosts) => {
-          const existingIds = new Set(prevPosts.map((post) => post._id));
-          const mergedPosts = [...prevPosts];
-
-          apiPosts.forEach((post) => {
-            if (!existingIds.has(post._id)) {
-              mergedPosts.push(post);
-              existingIds.add(post._id);
-            }
-          });
-
-          return mergedPosts;
-        });
+        setPosts(apiPosts);
       })
       .catch((err) => {
         console.error('Failed to fetch posts', err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -61,7 +38,9 @@ const Feed = () => {
           <p className='post-count'>{posts.length} {posts.length === 1 ? 'post' : 'posts'}</p>
         </div>
 
-        {posts.length > 0 ? (
+        {loading ? (
+          <p className="loading-text">Loading posts...</p>
+        ) : posts.length > 0 ? (
           <div className='post-grid'>
             {posts.map((post) => (
               <article key={post._id} className='post-card'>
@@ -87,4 +66,4 @@ const Feed = () => {
   );
 };
 
-export default Feed
+export default Feed;

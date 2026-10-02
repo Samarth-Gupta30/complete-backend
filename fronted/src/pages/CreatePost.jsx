@@ -1,35 +1,31 @@
-import  { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 const CreatePost = () => {
   const navigate = useNavigate();
   const [fileName, setFileName] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const formData = new FormData(e.target);
 
     try {
-      const res = await axios.post(
-        "https://complete-backend-465s.onrender.com/create-post",
-        formData
-      );
+      const res = await axios.post(`${API_BASE_URL}/create-post`, formData);
 
       console.log(res.data);
-      alert("Post Created");
+      alert("Post Created Successfully");
       navigate("/feed");
-      e.target.reset();
-      setFileName("");
     } catch (err) {
       console.error(err);
-
-      if (err.response) {
-        console.log(err.response.data);
-      }
-
-      alert("Error creating post");
+      alert(err.response?.data?.message || "Error creating post");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -67,7 +63,9 @@ const CreatePost = () => {
 
           <div className="form-actions">
             <button className="cancel-link" type="button" onClick={() => navigate("/feed")}>Cancel</button>
-            <button className="publish-button" type="submit">Publish post <span aria-hidden="true">→</span></button>
+            <button className="publish-button" type="submit" disabled={loading}>
+              {loading ? "Publishing..." : "Publish post"} <span aria-hidden="true">→</span>
+            </button>
           </div>
         </form>
       </section>
