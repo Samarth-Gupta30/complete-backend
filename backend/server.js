@@ -4,8 +4,10 @@ const connectDB = require("./src/db/db");
 
 const PORT = process.env.PORT || 3000;
 
-connectDB();
-
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Backend server running on http://localhost:${PORT}`);
+  });
+}).catch((err) => {
+  console.error("Database connection failed:", err);
 });

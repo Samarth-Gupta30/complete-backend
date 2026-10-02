@@ -11,7 +11,7 @@ app.use(express.json());
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-app.post('/create-post', upload.single("image"), async (req, res) => {
+app.post("/create-post", upload.single("image"), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: "Image file is required" });
@@ -37,7 +37,7 @@ app.post('/create-post', upload.single("image"), async (req, res) => {
   }
 });
 
-app.get('/posts', async (req, res) => {
+app.get("/posts", async (req, res) => {
   try {
     const posts = await postModel.find().sort({ createdAt: -1 });
     return res.status(200).json({
